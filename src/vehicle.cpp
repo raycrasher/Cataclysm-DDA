@@ -4563,7 +4563,10 @@ double vehicle::lift_thrust_of_rotorcraft( const bool fuelled, const bool safe )
 {
     int rotor_area_in_feet = 0;
     for( const int rotor : rotors ) {
-        double rotor_diameter_in_feet = parts[rotor].info().rotor_info->rotor_diameter * 3.28084;
+        // add the bonus as a free, non-colliding bonus to the rotor diameter.
+        // this enables stuff like VTOL jet thrusters and ducted fans.
+        int diameter_bonus = parts[rotor].info().bonus;
+        double rotor_diameter_in_feet = (parts[rotor].info().rotor_info->rotor_diameter + diameter_bonus) * 3.28084;
         rotor_area_in_feet += ( M_PI / 4 ) * std::pow( rotor_diameter_in_feet, 2 );
     }
     // take off 15 % due to the imaginary tail rotor power.
